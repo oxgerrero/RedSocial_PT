@@ -1,0 +1,82 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  nombre           String
+  apellido         String
+  alias            String    @unique
+  fecha_nacimiento DateTime
+  email            String    @unique
+  password         String
+  createdAt        DateTime  @default(now())
+
+  posts            Post[]
+  reactions        Reaction[]
+  comments         Comment[]
+  reposts          Repost[]
+
+  @@map("users")
+}
+
+model Post {
+  id                Int        @id @default(autoincrement())
+  userId            Int
+  contenido         String
+  fecha_publicacion DateTime
+  createdAt         DateTime   @default(now())
+
+  user              User       @relation(fields: [userId], references: [id])
+  reactions         Reaction[]
+  comments          Comment[]
+  reposts           Repost[]   @relation("OriginalPostReposts")
+
+  @@map("posts")
+}
+
+model Reaction {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  type      String   // Valores como: like, love, laugh, wow, sad, angry
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
+
+  @@map("reactions")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  content   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
+
+  @@map("comments")
+}
+
+model Repost {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  originalPostId   Int
+  createdAt        DateTime @default(now())
+
+  user             User     @relation(fields: [userId], references: [id])
+  originalPost     Post     @relation("OriginalPostReposts", fields: [originalPostId], references: [id])
+
+  @@map("reposts")
+}
