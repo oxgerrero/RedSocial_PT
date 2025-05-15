@@ -3,7 +3,7 @@
   "info": {
     "title": "RedSocial_PT API",
     "version": "1.0.0",
-    "description": "Documentación de la API de la Red Social Fullstack"
+    "description": "Documentación completa de la API de la Red Social Fullstack"
   },
   "servers": [
     {
@@ -34,6 +34,18 @@
           "token": { "type": "string" }
         }
       },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "nombre": { "type": "string" },
+          "apellido": { "type": "string" },
+          "alias": { "type": "string" },
+          "fecha_nacimiento": { "type": "string", "format": "date" },
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        },
+        "required": ["nombre", "apellido", "alias", "fecha_nacimiento", "email", "password"]
+      },
       "PostRequest": {
         "type": "object",
         "properties": {
@@ -63,6 +75,24 @@
           "originalPostId": { "type": "integer" }
         },
         "required": ["originalPostId"]
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "oldPassword": { "type": "string" },
+          "newPassword": { "type": "string" }
+        },
+        "required": ["oldPassword", "newPassword"]
+      },
+      "UpdateProfileRequest": {
+        "type": "object",
+        "properties": {
+          "nombre": { "type": "string" },
+          "apellido": { "type": "string" },
+          "alias": { "type": "string" },
+          "fecha_nacimiento": { "type": "string", "format": "date" }
+        },
+        "required": ["nombre", "apellido", "alias", "fecha_nacimiento"]
       }
     }
   },
@@ -90,6 +120,24 @@
             }
           },
           "401": { "description": "Credenciales inválidas" }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Autenticación"],
+        "summary": "Registro de nuevo usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Usuario registrado y token generado" },
+          "409": { "description": "Email o alias ya en uso" }
         }
       }
     },
@@ -179,7 +227,43 @@
         "summary": "Obtener perfil del usuario autenticado",
         "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "Datos del usuario" }
+          "200": { "description": "Datos del usuario autenticado" }
+        }
+      }
+    },
+    "/api/users/change-password": {
+      "put": {
+        "tags": ["Usuarios"],
+        "summary": "Cambiar contraseña del usuario",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangePasswordRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Contraseña actualizada exitosamente" }
+        }
+      }
+    },
+    "/api/users/update-profile": {
+      "put": {
+        "tags": ["Usuarios"],
+        "summary": "Actualizar perfil del usuario",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateProfileRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Perfil actualizado exitosamente" }
         }
       }
     }
