@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",            // ✅ Usa ES2022 o incluso ESNext
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "moduleResolution": "node",    // ✅ Muy importante para encontrar paquetes como express
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
