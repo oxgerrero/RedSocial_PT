@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axiosClient from '../api/axiosClient';
 import { useAuthStore } from '../context/authStore';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ export const LoginForm = () => {
       navigate('/posts');
     } catch (error) {
       console.error(error);
-      alert('Login failed');
+      toast.error('Login failed');
     }
   };
 

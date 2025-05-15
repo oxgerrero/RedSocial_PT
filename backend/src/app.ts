@@ -8,6 +8,7 @@ import { authRouter } from './routes/auth.routes';
 import { postRouter } from './routes/post.routes';
 import { userRouter } from './routes/user.routes';
 import { devRouter } from './routes/dev.routes';
+import { authLimiter } from './middlewares/rateLimit.middleware';
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,10 @@ app.use('/api/posts', postRouter);
 app.use('/api/users', userRouter);
 //otros services
 app.use('/api/dev', devRouter);
+
+//Limites de peticiones
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
