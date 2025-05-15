@@ -1,5 +1,6 @@
 -- Crear base de datos
 CREATE DATABASE red_social_db;
+CREATE DATABASE red_social_test_db;
 
 -- Conectarse a la base de datos
 \c red_social_db

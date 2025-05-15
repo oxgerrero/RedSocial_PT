@@ -1,0 +1,14 @@
+node_modules
+pnpm-lock.yaml
+npm-debug.log
+Dockerfile
+docker-compose.yml
+dist
+.env
+
+*.log
+coverage
+.vscode
+.idea
+*.md
+__tests__

@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.postRouter = void 0;
+const express_1 = require("express");
+const post_service_1 = require("../services/post.service");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+exports.postRouter = (0, express_1.Router)();
+exports.postRouter.use(auth_middleware_1.verifyToken);
+exports.postRouter.get('/', post_service_1.listPosts);
+exports.postRouter.post('/', post_service_1.createPost);
+exports.postRouter.post('/react', post_service_1.reactToPost);
+exports.postRouter.post('/comment', post_service_1.commentOnPost);
+exports.postRouter.post('/repost', post_service_1.repostPost);

@@ -1,51 +1,53 @@
-version: "3.9"
+version: '3.8'
 
 services:
-  db:
-    image: postgres:15-alpine
-    container_name: postgres-db
+  database:
+    image: postgres:14
+    container_name: red_social_db
     restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: red_social_db
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - redsocial_net
+      - redsocialnet
 
   backend:
     build:
       context: ./backend
-    container_name: backend-pt
+    container_name: red_social_backend
     restart: always
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: "postgresql://postgres:admin123@db:5432/red_social_db"
-      JWT_SECRET: "supersecret123"
+      DATABASE_URL: "postgresql://postgres:admin123@database:5432/red_social_db"
+      JWT_SECRET: "clave_secreta_segura"
     depends_on:
-      - db
+      - database
     networks:
-      - redsocial_net
+      - redsocialnet
 
   frontend:
     build:
       context: ./frontend
-    container_name: frontend-pt
+    container_name: red_social_frontend
     restart: always
     ports:
-      - "5173:80"
+      - "5173:5173"
+    environment:
+      VITE_API_URL: "http://localhost:3000"
     depends_on:
       - backend
     networks:
-      - redsocial_net
+      - redsocialnet
 
 volumes:
   postgres_data:
 
 networks:
-  redsocial_net:
+  redsocialnet:
     driver: bridge

@@ -7,7 +7,7 @@ export const initializeUsersPasswords = async () => {
     
     const users = await prisma.user.findMany();
 
-    const passwordHash = await bcrypt.hash('123456', 10); // ✅ Hash de la contraseña genérica
+    const passwordHash = await bcrypt.hash('Contraseña1.', 10); // contraseña genérica
 
     for (const user of users) {
       await prisma.user.update({
