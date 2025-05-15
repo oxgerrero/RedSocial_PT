@@ -12,7 +12,16 @@ export const createPost = async (req: Request, res: Response) => {
 
 export const listPosts = async (_req: Request, res: Response) => {
   const posts = await prisma.post.findMany({
-    include: { user: { select: { alias: true } }, reactions: true, comments: true, reposts: true },
+    include: {
+      user: { select: { alias: true } },
+      reactions: true,
+      comments: {
+        include: {
+          user: { select: { alias: true } }, // 🔥 muy importante
+        },
+      },
+      reposts: true,
+    },
     orderBy: { createdAt: 'desc' },
   });
   res.json(posts);
