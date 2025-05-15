@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosClient from '../api/axiosClient';
 import { Navbar } from '../components/Navbar';
-import { z } from 'zod';
+import axiosClient from '../api/axiosClient';
 import { toast } from 'react-hot-toast';
+import { z } from 'zod';
 
-// Esquema de validación
 const profileSchema = z.object({
   nombre: z.string().min(2, 'Nombre muy corto'),
   apellido: z.string().min(2, 'Apellido muy corto'),
@@ -28,15 +27,16 @@ export const EditProfilePage = () => {
       try {
         const { data } = await axiosClient.get('/users/profile');
         setForm({
-          nombre: data.nombre || '',
-          apellido: data.apellido || '',
-          alias: data.alias || '',
-          fecha_nacimiento: data.fecha_nacimiento?.split('T')[0] || '',
+          nombre: data.nombre,
+          apellido: data.apellido,
+          alias: data.alias,
+          fecha_nacimiento: data.fecha_nacimiento?.split('T')[0],
         });
       } catch (error) {
-        console.error(error);
+        console.error('Error cargando perfil:', error);
       }
     };
+
     fetchProfile();
   }, []);
 
@@ -69,55 +69,74 @@ export const EditProfilePage = () => {
       navigate('/profile');
     } catch (error: any) {
       console.error(error);
-      console.error(error);
-      if (!error.response) {
-        toast.error('Servidor no disponible. Intenta más tarde.');
-      } else {
-        toast.error(error.response?.data?.message || 'Error actualizando perfil.');
-      }
+      toast.error(error.response?.data?.message || 'Error actualizando perfil.');
     }
   };
 
   return (
-    <div className="edit-profile-container">
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <h2>Editar Perfil</h2>
-      <form onSubmit={handleSubmit}>
 
-        <input
-          name="nombre"
-          placeholder="Nombre"
-          value={form.nombre}
-          onChange={handleChange}
-        />
-        {errors.nombre && <small>{errors.nombre}</small>}
+      <div className="max-w-2xl mx-auto mt-10 bg-white p-8 rounded-2xl shadow-xl">
+        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+          Editar Perfil
+        </h2>
 
-        <input
-          name="apellido"
-          placeholder="Apellido"
-          value={form.apellido}
-          onChange={handleChange}
-        />
-        {errors.apellido && <small>{errors.apellido}</small>}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
-        <input
-          name="alias"
-          placeholder="Alias"
-          value={form.alias}
-          onChange={handleChange}
-        />
-        {errors.alias && <small>{errors.alias}</small>}
+          <div>
+            <input
+              name="nombre"
+              className="w-full border p-3 rounded-lg"
+              placeholder="Nombre"
+              value={form.nombre}
+              onChange={handleChange}
+            />
+            {errors.nombre && <small className="text-red-500">{errors.nombre}</small>}
+          </div>
 
-        <input
-          type="date"
-          name="fecha_nacimiento"
-          value={form.fecha_nacimiento}
-          onChange={handleChange}
-        />
-        {errors.fecha_nacimiento && <small>{errors.fecha_nacimiento}</small>}
+          <div>
+            <input
+              name="apellido"
+              className="w-full border p-3 rounded-lg"
+              placeholder="Apellido"
+              value={form.apellido}
+              onChange={handleChange}
+            />
+            {errors.apellido && <small className="text-red-500">{errors.apellido}</small>}
+          </div>
 
-        <button type="submit">Actualizar Perfil</button>
-      </form>
+          <div>
+            <input
+              name="alias"
+              className="w-full border p-3 rounded-lg"
+              placeholder="Alias"
+              value={form.alias}
+              onChange={handleChange}
+            />
+            {errors.alias && <small className="text-red-500">{errors.alias}</small>}
+          </div>
+
+          <div>
+            <input
+              type="date"
+              name="fecha_nacimiento"
+              className="w-full border p-3 rounded-lg"
+              value={form.fecha_nacimiento}
+              onChange={handleChange}
+            />
+            {errors.fecha_nacimiento && <small className="text-red-500">{errors.fecha_nacimiento}</small>}
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 transition"
+          >
+            Guardar Cambios
+          </button>
+
+        </form>
+      </div>
     </div>
   );
 };

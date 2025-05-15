@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import { AuthCard } from '../components/AuthCard';
 import { LoginPage } from '../pages/LoginPage';
 import { PostsPage } from '../pages/PostsPage';
 import { ProfilePage } from '../pages/ProfilePage';
@@ -7,14 +8,14 @@ import { useAuthStore } from '../context/authStore';
 import { ChangePasswordPage } from '../pages/ChangePasswordPage';
 import { EditProfilePage } from '../pages/EditProfilePage';
 import { toast } from 'react-hot-toast';
+import { Navigate } from 'react-router-dom';
 
 // Componente para proteger rutas privadas
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { token } = useAuthStore();
   
   if (!token) {
-    toast.error('Acceso no autorizado. Por favor inicia sesión.');
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -23,11 +24,9 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
 
 export const AppRouter = () => {
   return (
-    <BrowserRouter>
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/" element={<AuthCard />} /> 
 
         {/* Private routes */}
         <Route
@@ -63,6 +62,5 @@ export const AppRouter = () => {
           }
         />
       </Routes>
-    </BrowserRouter>
   );
 };
