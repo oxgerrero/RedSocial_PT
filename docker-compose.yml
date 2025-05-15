@@ -1,26 +1,51 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  postgres:
-    image: postgres:latest
+  db:
+    image: postgres:15-alpine
     container_name: postgres-db
     restart: always
-    ports:
-      - "5432:5432"
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: red_social_db
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - redsocial_net
+
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+    container_name: backend-pt
+    restart: always
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:admin123@postgres-db:5432/red_social_db
-      - JWT_SECRET=PruebaTecnica
+      DATABASE_URL: "postgresql://postgres:admin123@db:5432/red_social_db"
+      JWT_SECRET: "supersecret123"
     depends_on:
-      - postgres
+      - db
+    networks:
+      - redsocial_net
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend-pt
+    restart: always
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - redsocial_net
 
 volumes:
   postgres_data:
+
+networks:
+  redsocial_net:
+    driver: bridge
